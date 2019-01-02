@@ -1,7 +1,7 @@
 # Prerequisites
 
-- Ubuntu 18.04
-- ROS Melodic (`ros-melodic-desktop-full` recommended)
+- Ubuntu 18.04 or Ubuntu 16.04
+- ROS Melodic (`ros-melodic-desktop-full` recommended) for Ubuntu 18.04 or ROS Kinetic (`ros-kinetic-desktop-full` recommended) for Ubuntu 16.04
 - OpenCV 3
 
 # Build
