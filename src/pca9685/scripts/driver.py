@@ -121,10 +121,10 @@ def main(args):
         rospy.loginfo(
             'IMPORTANT Please secure the RC car before proceeding, for example by putting it on top of a shoebox '
             'or a small but thick book. The wheels should not touch anything.')
-        input('Press Enter to continue...')
+        raw_input('Press Enter to continue...')
 
         rospy.spin()
-    
+
     except KeyboardInterrupt:
         print('Shutting down...')
 
