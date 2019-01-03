@@ -71,9 +71,9 @@ class SteeringDriver:
     def __init__(self):
         self.subscriber = rospy.Subscriber('steering/normalized', Float32, self.callback)
 
-    def callback(self, data):
+    def callback(self, setpoint):
         # TODO Publish intermediate values to topics for easier troubleshooting
-        steering_normalized = data  # a Float32 between 0.0 and 1.0
+        steering_normalized = float(setpoint.data)  # a Float32 between 0.0 and 1.0
 
         if steering_normalized > STEERING_LIMIT:
             steering_normalized_limited = STEERING_LIMIT
