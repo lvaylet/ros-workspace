@@ -6,3 +6,5 @@ devel/
 data/
 
 .idea/
+
+*.pyc
