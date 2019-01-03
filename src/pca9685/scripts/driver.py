@@ -35,6 +35,7 @@ THROTTLE_LIMIT = float(os.environ.get('THROTTLE_LIMIT', '0.1'))  # limit throttl
 STEERING_CHANNEL_ON_PCA9685 = int(os.environ.get('STEERING_CHANNEL_ON_PCA9685', '0'))
 THROTTLE_CHANNEL_ON_PCA9685 = int(os.environ.get('THROTTLE_CHANNEL_ON_PCA9685', '1'))
 
+
 # endregion
 
 # region Classes
@@ -45,9 +46,9 @@ class ThrottleDriver:
     def __init__(self):
         self.subscriber = rospy.Subscriber('throttle/normalized', Float32, self.callback)
 
-    def callback(self, data):
+    def callback(self, setpoint):
         # TODO Publish intermediate values to topics for easier troubleshooting
-        throttle_normalized = data  # a Float32 between 0.0 and 1.0
+        throttle_normalized = float(setpoint.data)  # a Float32 between 0.0 and 1.0
 
         if throttle_normalized > THROTTLE_LIMIT:
             throttle_normalized_limited = THROTTLE_LIMIT
@@ -56,14 +57,22 @@ class ThrottleDriver:
         else:
             throttle_normalized_limited = throttle_normalized
 
-        throttle_limited = helpers.normalized_to_microseconds(throttle_normalized_limited,
-                                                              low=THROTTLE_MIN,
-                                                              center=THROTTLE_CENTER,
-                                                              high=THROTTLE_MAX)
+        throttle_microseconds = helpers.normalized_to_microseconds(throttle_normalized_limited,
+                                                                   low=THROTTLE_MIN,
+                                                                   center=THROTTLE_CENTER,
+                                                                   high=THROTTLE_MAX)
+
+        throttle_ticks = helpers.pulse_width_microseconds_to_ticks(throttle_microseconds)
+
+        rospy.loginfo('Throttle normalized: %f, normalized limited: %f, microseconds: %d, ticks: %d',
+                      throttle_normalized,
+                      throttle_normalized_limited,
+                      throttle_microseconds,
+                      throttle_ticks)
 
         pca9685.set_pwm(channel=THROTTLE_CHANNEL_ON_PCA9685,
                         on=0,
-                        off=helpers.pulse_width_microseconds_to_ticks(throttle_limited))
+                        off=throttle_ticks)
 
 
 class SteeringDriver:
@@ -89,7 +98,7 @@ class SteeringDriver:
 
         steering_ticks = helpers.pulse_width_microseconds_to_ticks(steering_microseconds)
 
-        rospy.loginfo('normalized: %f, normalized limited: %f, microseconds: %d, ticks: %d',
+        rospy.loginfo('Steering normalized: %f, normalized limited: %f, microseconds: %d, ticks: %d',
                       steering_normalized,
                       steering_normalized_limited,
                       steering_microseconds,
@@ -109,6 +118,7 @@ pca9685 = Adafruit_PCA9685.PCA9685(address=0x40, busnum=1)
 
 rospy.loginfo('Setting PCA9685 PWM frequency to [%d] Hz...', PWM_FREQUENCY_HZ)
 pca9685.set_pwm_freq(PWM_FREQUENCY_HZ)
+
 
 # endregion
 
