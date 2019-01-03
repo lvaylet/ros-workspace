@@ -82,14 +82,22 @@ class SteeringDriver:
         else:
             steering_normalized_limited = steering_normalized
 
-        steering_limited = helpers.normalized_to_microseconds(steering_normalized_limited,
-                                                              low=STEERING_MIN,
-                                                              center=STEERING_CENTER,
-                                                              high=STEERING_MAX)
+        steering_microseconds = helpers.normalized_to_microseconds(steering_normalized_limited,
+                                                                   low=STEERING_MIN,
+                                                                   center=STEERING_CENTER,
+                                                                   high=STEERING_MAX)
+
+        steering_ticks = helpers.pulse_width_microseconds_to_ticks(steering_microseconds)
+
+        rospy.loginfo('normalized: %f, normalized limited: %f, microseconds: %d, ticks: %d',
+                      steering_normalized,
+                      steering_normalized_limited,
+                      steering_microseconds,
+                      steering_ticks)
 
         pca9685.set_pwm(channel=STEERING_CHANNEL_ON_PCA9685,
                         on=0,
-                        off=helpers.pulse_width_microseconds_to_ticks(steering_limited))
+                        off=steering_ticks)
 
 
 # endregion
