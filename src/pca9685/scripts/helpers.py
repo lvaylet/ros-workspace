@@ -1,14 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 import logging
 import re
-from typing import Dict
 
 logger = logging.getLogger(__name__)
 
 
-def map_to_range(x: int, from_low: int, from_high: int, to_low: int, to_high: int) -> int:
+def map_to_range(x, from_low, from_high, to_low, to_high):
     """
     Re-map a number from one range to another.
     A value of fromLow would get mapped to toLow, a value of fromHigh to toHigh, values in-between to values in-between.
@@ -31,7 +30,7 @@ def map_to_range(x: int, from_low: int, from_high: int, to_low: int, to_high: in
 
 
 # FIXME Review page 17 of https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf for a good example of how to compute ticks
-def pulse_width_microseconds_to_ticks(desired_pulse_width_microseconds: int, pwm_freq_hz: int = 50) -> int:
+def pulse_width_microseconds_to_ticks(desired_pulse_width_microseconds, pwm_freq_hz=50):
     """
     Convert a PWM pulse width from microseconds to 12-bit ticks (0..4095).
     If setting the pulse width in microseconds is easier, you can do that by first figuring out how long each cycle is.
@@ -47,14 +46,14 @@ def pulse_width_microseconds_to_ticks(desired_pulse_width_microseconds: int, pwm
     :type pwm_freq_hz: int
     :rtype: int
     """
-    microseconds_per_second = 1_000_000
+    microseconds_per_second = 1000000
     microseconds_per_period = microseconds_per_second // pwm_freq_hz
     # Now map the desired pulse width (in microseconds) to ticks (0..4095 due to the 12-bit resolution)
     pulse_width_ticks = map_to_range(desired_pulse_width_microseconds, 0, microseconds_per_period, 0, 4095)
     return pulse_width_ticks
 
 
-def microseconds_to_normalized(reading: int, min_reading: int, center_reading: int, max_reading: int) -> float:
+def microseconds_to_normalized(reading, min_reading, center_reading, max_reading):
     """
     Converts a pulse width (in microseconds) to a normalized setpoint (between -1.0 and 1.0).
     Positive and negative values are computed separately, as they can span different intervals initially.
@@ -78,7 +77,7 @@ def microseconds_to_normalized(reading: int, min_reading: int, center_reading: i
     return normalized_reading
 
 
-def normalized_to_microseconds(normalized_setpoint: float, low: int, center: int, high: int) -> int:
+def normalized_to_microseconds(normalized_setpoint, low, center, high):
     """
     Converts a normalized setpoint (between -1.0 and 1.0) to a pulse width (in microseconds).
     Positive and negative values are computed separately, as they can span different intervals in terms of pulse widths.
@@ -102,7 +101,7 @@ def normalized_to_microseconds(normalized_setpoint: float, low: int, center: int
         return int(normalized_setpoint * (center - low)) + center
 
 
-def serial_data_to_dict(byte_array: bytes) -> Dict[str, int]:
+def serial_data_to_dict(byte_array):
     """
     Convert a byte array to a dictionary like {'channel name': value}
     :param byte_array: The byte array read from the serial port.
@@ -119,4 +118,3 @@ def serial_data_to_dict(byte_array: bytes) -> Dict[str, int]:
     unpacked = [(x[0].decode(), int(x[1].decode())) for x in packed]
     # Build a dictionary out of the unpacked list of tuples (key = channel name, value = channel value)
     return dict(unpacked)
-
