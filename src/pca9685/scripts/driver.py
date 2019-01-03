@@ -23,11 +23,11 @@ PWM_FREQUENCY_HZ = int(os.environ.get('PWN_FREQUENCY_HZ', '50'))  # 50 Hz is sui
 
 STEERING_MIN = int(os.environ.get('STEERING_MIN', '1000'))
 STEERING_MAX = int(os.environ.get('STEERING_MAX', '1984'))
-STEERING_CENTER = int(os.environ.get('STEERING_CENTER', '1984'))
+STEERING_CENTER = int(os.environ.get('STEERING_CENTER', '1496'))
 
-THROTTLE_MIN = int(os.environ.get('THROTTLE_MIN', '1000'))
-THROTTLE_MAX = int(os.environ.get('THROTTLE_MAX', '1984'))
-THROTTLE_CENTER = int(os.environ.get('THROTTLE_CENTER', '1984'))
+THROTTLE_MIN = int(os.environ.get('THROTTLE_MIN', '1040'))
+THROTTLE_MAX = int(os.environ.get('THROTTLE_MAX', '1996'))
+THROTTLE_CENTER = int(os.environ.get('THROTTLE_CENTER', '1532'))
 
 STEERING_LIMIT = float(os.environ.get('STEERING_LIMIT', '1.0'))
 THROTTLE_LIMIT = float(os.environ.get('THROTTLE_LIMIT', '0.1'))  # limit throttle to 10% by default
