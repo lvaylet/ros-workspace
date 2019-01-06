@@ -14,7 +14,7 @@ source devel/setup.bash
 
 # Run
 
-In three difeerent terminals:
+In three different terminals:
 
 ```
 roscore
