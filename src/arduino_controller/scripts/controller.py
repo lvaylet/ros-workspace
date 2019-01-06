@@ -10,7 +10,7 @@ import os
 import serial
 import roslib
 import rospy
-from std_msgs.msg import Float32
+from std_msgs.msg import UInt16, Float32
 
 import helpers
 
@@ -40,8 +40,10 @@ rospy.loginfo('Connected to serial port %s at %d bauds.', SERIAL_PORT, SERIAL_SP
 
 
 def controller():
-    publisher_throttle = rospy.Publisher('throttle/normalized', Float32, queue_size=1)
-    publisher_steering = rospy.Publisher('steering/normalized', Float32, queue_size=1)
+    publisher_throttle_microseconds = rospy.Publisher('throttle/microseconds', UInt16, queue_size=1)
+    publisher_steering_microseconds = rospy.Publisher('steering/microseconds', UInt16, queue_size=1)
+    publisher_throttle_normalized = rospy.Publisher('throttle/normalized', Float32, queue_size=1)
+    publisher_steering_normalized = rospy.Publisher('steering/normalized', Float32, queue_size=1)
 
     rospy.init_node('arduino_controller', anonymous=True)
 
@@ -62,7 +64,10 @@ def controller():
             steering = STEERING_CENTER
             throttle = THROTTLE_CENTER
 
-        rospy.logdebug('Steering = %d, Throttle = %d', steering, throttle)
+        rospy.logdebug('Steering = %d microseconds, Throttle = %d microseconds', steering, throttle)
+
+        publisher_throttle_microseconds.publish(UInt16(throttle))
+        publisher_steering_microseconds.publish(UInt16(steering))
 
         # Normalize steering and throttle setpoints to [-1.0; +1.0]
         steering_normalized = helpers.microseconds_to_normalized(steering,
@@ -77,8 +82,8 @@ def controller():
         rospy.logdebug('Steering normalized = %d, Throttle normalized = %d',
                        steering_normalized, throttle_normalized)
 
-        publisher_throttle.publish(Float32(throttle_normalized))
-        publisher_steering.publish(Float32(steering_normalized))
+        publisher_throttle_normalized.publish(Float32(throttle_normalized))
+        publisher_steering_normalized.publish(Float32(steering_normalized))
 
 
 if __name__ == '__main__':
