@@ -71,8 +71,8 @@ def controller():
                                                                  max_reading=STEERING_MAX)
         throttle_normalized = helpers.microseconds_to_normalized(throttle,
                                                                  min_reading=THROTTLE_MIN,
-                                                                 center_reading=STEERING_CENTER,
-                                                                 max_reading=STEERING_MAX)
+                                                                 center_reading=THROTTLE_CENTER,
+                                                                 max_reading=THROTTLE_MAX)
 
         rospy.logdebug('Steering normalized = %d, Throttle normalized = %d',
                        steering_normalized, throttle_normalized)
