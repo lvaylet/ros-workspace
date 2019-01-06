@@ -40,8 +40,8 @@ rospy.loginfo('Connected to serial port %s at %d bauds.', SERIAL_PORT, SERIAL_SP
 
 
 def controller():
-    publisher_throttle = rospy.Publisher('throttle/normalized', Float32)
-    publisher_steering = rospy.Publisher('steering/normalized', Float32)
+    publisher_throttle = rospy.Publisher('throttle/normalized', Float32, queue_size=1)
+    publisher_steering = rospy.Publisher('steering/normalized', Float32, queue_size=1)
 
     rospy.init_node('arduino_controller', anonymous=True)
 
@@ -58,7 +58,7 @@ def controller():
             throttle = data_dict['CH2']
         except KeyError as e:
             # `CH1` or `CH2` are not in `data_dict`
-            rospy.logerror('Could not find key [%s] in data_dict.', e.args[0])
+            rospy.logerr('Could not find key [%s] in data_dict.', e.args[0])
             steering = STEERING_CENTER
             throttle = THROTTLE_CENTER
 
