@@ -35,11 +35,10 @@ THROTTLE_LIMIT = float(os.environ.get('THROTTLE_LIMIT', '0.1'))  # limit throttl
 STEERING_CHANNEL_ON_PCA9685 = int(os.environ.get('STEERING_CHANNEL_ON_PCA9685', '0'))
 THROTTLE_CHANNEL_ON_PCA9685 = int(os.environ.get('THROTTLE_CHANNEL_ON_PCA9685', '1'))
 
-
 # endregion
 
-# region Classes
 
+# region Classes
 
 class ThrottleDriver:
 
@@ -108,8 +107,8 @@ class SteeringDriver:
                         on=0,
                         off=steering_ticks)
 
-
 # endregion
+
 
 # region PCA9685
 
@@ -118,7 +117,6 @@ pca9685 = Adafruit_PCA9685.PCA9685(address=0x40, busnum=1)
 
 rospy.loginfo('Setting PCA9685 PWM frequency to [%d] Hz...', PWM_FREQUENCY_HZ)
 pca9685.set_pwm_freq(PWM_FREQUENCY_HZ)
-
 
 # endregion
 
@@ -136,7 +134,7 @@ def main(args):
         rospy.spin()
 
     except KeyboardInterrupt:
-        print('Shutting down...')
+        rospy.loginfo('Shutting down...')
 
 
 if __name__ == '__main__':
