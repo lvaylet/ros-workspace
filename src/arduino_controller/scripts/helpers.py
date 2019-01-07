@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+# backport Python 3 integer division, so int divided by int returns a float
 from __future__ import division
 
 import logging
