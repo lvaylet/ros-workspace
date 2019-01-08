@@ -37,7 +37,6 @@ THROTTLE_CHANNEL_ON_PCA9685 = int(os.environ.get('THROTTLE_CHANNEL_ON_PCA9685', 
 
 # endregion
 
-
 # region Classes
 
 class ThrottleDriver:
@@ -109,7 +108,6 @@ class SteeringDriver:
 
 # endregion
 
-
 # region PCA9685
 
 rospy.loginfo('Connecting to PCA9685...')
@@ -129,7 +127,6 @@ def main(args):
         rospy.loginfo(
             'IMPORTANT Please secure the RC car before proceeding, for example by putting it on top of a shoebox '
             'or a small but thick book. The wheels should not touch anything.')
-        raw_input('Press Enter to continue...')
 
         rospy.spin()
 
