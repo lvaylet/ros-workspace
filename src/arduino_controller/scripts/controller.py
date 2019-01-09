@@ -18,20 +18,20 @@ roslib.load_manifest('arduino_controller')
 
 # region Constants
 
-STEERING_MIN = int(os.environ.get('STEERING_MIN', '1000'))
-STEERING_MAX = int(os.environ.get('STEERING_MAX', '1984'))
-STEERING_CENTER = int(os.environ.get('STEERING_CENTER', '1496'))
+STEERING_MIN = rospy.get_param('~steering_min', 1000)
+STEERING_CENTER = rospy.get_param('~steering_center', 1496)
+STEERING_MAX = rospy.get_param('~steering_max', 1984)
 
-THROTTLE_MIN = int(os.environ.get('THROTTLE_MIN', '1040'))
-THROTTLE_MAX = int(os.environ.get('THROTTLE_MAX', '1996'))
-THROTTLE_CENTER = int(os.environ.get('THROTTLE_CENTER', '1532'))
+THROTTLE_MIN = rospy.get_param('~throttle_min', 1040)
+THROTTLE_MAX = rospy.get_param('~throttle_max', 1996)
+THROTTLE_CENTER = rospy.get_param('~throttle_center', 1532)
+
+SERIAL_PORT = rospy.get_param('~serial_port', '/dev/ttyACM0')
+SERIAL_SPEED_BAUDS = rospy.get_param('~serial_speed_bauds', 57600)
 
 # endregion
 
 # region Serial port
-
-SERIAL_PORT = os.environ.get('SERIAL_PORT', '/dev/ttyACM0')
-SERIAL_SPEED_BAUDS = int(os.environ.get('SERIAL_SPEED_BAUDS', '57600'))
 
 ser = serial.Serial(SERIAL_PORT, SERIAL_SPEED_BAUDS)
 rospy.loginfo('Connected to serial port %s at %d bauds.', SERIAL_PORT, SERIAL_SPEED_BAUDS)
