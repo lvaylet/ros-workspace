@@ -18,13 +18,13 @@ roslib.load_manifest('arduino_controller')
 
 # region Constants
 
-STEERING_MIN = rospy.get_param('~steering_min', 1000)
-STEERING_CENTER = rospy.get_param('~steering_center', 1496)
-STEERING_MAX = rospy.get_param('~steering_max', 1984)
+STEERING_MIN_USECS = rospy.get_param('~steering_min_usecs', 1000)
+STEERING_CENTER_USECS = rospy.get_param('~steering_center_usecs', 1496)
+STEERING_MAX_USECS = rospy.get_param('~steering_max_usecs', 1984)
 
-THROTTLE_MIN = rospy.get_param('~throttle_min', 1040)
-THROTTLE_MAX = rospy.get_param('~throttle_max', 1996)
-THROTTLE_CENTER = rospy.get_param('~throttle_center', 1532)
+THROTTLE_MIN_USECS = rospy.get_param('~throttle_min_usecs', 1040)
+THROTTLE_CENTER_USECS = rospy.get_param('~throttle_center_usecs', 1532)
+THROTTLE_MAX_USECS = rospy.get_param('~throttle_max_usecs', 1996)
 
 SERIAL_PORT = rospy.get_param('~serial_port', '/dev/ttyACM0')
 SERIAL_SPEED_BAUDS = rospy.get_param('~serial_speed_bauds', 57600)
@@ -61,8 +61,8 @@ def controller():
         except KeyError as e:
             # `CH1` or `CH2` are not in `data_dict`
             rospy.logerr('Could not find key [%s] in data_dict.', e.args[0])
-            steering = STEERING_CENTER
-            throttle = THROTTLE_CENTER
+            steering = STEERING_CENTER_USECS
+            throttle = THROTTLE_CENTER_USECS
 
         rospy.logdebug('Steering = %d microseconds, Throttle = %d microseconds', steering, throttle)
 
@@ -71,13 +71,13 @@ def controller():
 
         # Normalize steering and throttle setpoints to [-1.0; +1.0]
         steering_normalized = helpers.microseconds_to_normalized(steering,
-                                                                 min_reading=STEERING_MIN,
-                                                                 center_reading=STEERING_CENTER,
-                                                                 max_reading=STEERING_MAX)
+                                                                 min_reading=STEERING_MIN_USECS,
+                                                                 center_reading=STEERING_CENTER_USECS,
+                                                                 max_reading=STEERING_MAX_USECS)
         throttle_normalized = helpers.microseconds_to_normalized(throttle,
-                                                                 min_reading=THROTTLE_MIN,
-                                                                 center_reading=THROTTLE_CENTER,
-                                                                 max_reading=THROTTLE_MAX)
+                                                                 min_reading=THROTTLE_MIN_USECS,
+                                                                 center_reading=THROTTLE_CENTER_USECS,
+                                                                 max_reading=THROTTLE_MAX_USECS)
 
         rospy.logdebug('Steering normalized = %d, Throttle normalized = %d',
                        steering_normalized, throttle_normalized)
