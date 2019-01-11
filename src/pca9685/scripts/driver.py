@@ -5,7 +5,6 @@
 Use the Adafruit PCA9685 PWM controller library to steer the wheels of the RC car from left to right.
 """
 
-import os
 import sys
 
 import Adafruit_PCA9685
@@ -19,23 +18,24 @@ roslib.load_manifest('pca9685')
 
 # region Constants
 
-PWM_FREQUENCY_HZ = int(os.environ.get('PWN_FREQUENCY_HZ', '50'))  # 50 Hz is suitable for most servos with 20 ms frames
+PWM_FREQUENCY_HZ = rospy.get_param('~pwm_frequency_hz', 50)  # 50 Hz is suitable for most servos with 20 ms frames
 
-STEERING_MIN = int(os.environ.get('STEERING_MIN', '1000'))
-STEERING_MAX = int(os.environ.get('STEERING_MAX', '1984'))
-STEERING_CENTER = int(os.environ.get('STEERING_CENTER', '1496'))
+STEERING_MIN_USECS = rospy.get_param('~steering_min_usecs', 1000)
+STEERING_CENTER_USECS = rospy.get_param('~steering_center_usecs', 1496)
+STEERING_MAX_USECS = rospy.get_param('~steering_max_usecs', 1984)
 
-THROTTLE_MIN = int(os.environ.get('THROTTLE_MIN', '1040'))
-THROTTLE_MAX = int(os.environ.get('THROTTLE_MAX', '1996'))
-THROTTLE_CENTER = int(os.environ.get('THROTTLE_CENTER', '1532'))
+THROTTLE_MIN_USECS = rospy.get_param('~throttle_min_usecs', 1040)
+THROTTLE_CENTER_USECS = rospy.get_param('~throttle_center_usecs', 1532)
+THROTTLE_MAX_USECS = rospy.get_param('~throttle_max_usecs', 1996)
 
-STEERING_LIMIT = float(os.environ.get('STEERING_LIMIT', '1.0'))
-THROTTLE_LIMIT = float(os.environ.get('THROTTLE_LIMIT', '0.1'))  # limit throttle to 10% by default
+STEERING_LIMIT = rospy.get_param('~steering_limit', 1.0)
+THROTTLE_LIMIT = rospy.get_param('~throttle_limit', 0.2)  # limit throttle to 20% by default
 
-STEERING_CHANNEL_ON_PCA9685 = int(os.environ.get('STEERING_CHANNEL_ON_PCA9685', '0'))
-THROTTLE_CHANNEL_ON_PCA9685 = int(os.environ.get('THROTTLE_CHANNEL_ON_PCA9685', '1'))
+STEERING_CHANNEL_ON_PCA9685 = rospy.get_param('~steering_channel', 0)
+THROTTLE_CHANNEL_ON_PCA9685 = rospy.get_param('~throttle_channel', 1)
 
 # endregion
+
 
 # region Classes
 
@@ -56,9 +56,9 @@ class ThrottleDriver:
             throttle_normalized_limited = throttle_normalized
 
         throttle_microseconds = helpers.normalized_to_microseconds(throttle_normalized_limited,
-                                                                   low=THROTTLE_MIN,
-                                                                   center=THROTTLE_CENTER,
-                                                                   high=THROTTLE_MAX)
+                                                                   low=THROTTLE_MIN_USECS,
+                                                                   center=THROTTLE_CENTER_USECS,
+                                                                   high=THROTTLE_MAX_USECS)
 
         throttle_ticks = helpers.pulse_width_microseconds_to_ticks(throttle_microseconds)
 
@@ -90,9 +90,9 @@ class SteeringDriver:
             steering_normalized_limited = steering_normalized
 
         steering_microseconds = helpers.normalized_to_microseconds(steering_normalized_limited,
-                                                                   low=STEERING_MIN,
-                                                                   center=STEERING_CENTER,
-                                                                   high=STEERING_MAX)
+                                                                   low=STEERING_MIN_USECS,
+                                                                   center=STEERING_CENTER_USECS,
+                                                                   high=STEERING_MAX_USECS)
 
         steering_ticks = helpers.pulse_width_microseconds_to_ticks(steering_microseconds)
 
@@ -107,6 +107,7 @@ class SteeringDriver:
                         off=steering_ticks)
 
 # endregion
+
 
 # region PCA9685
 
